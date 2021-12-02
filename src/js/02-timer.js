@@ -3,9 +3,6 @@ import 'flatpickr/dist/flatpickr.min.css';
 import Notiflix from 'notiflix';
 
 const startButton = document.querySelector('[data-start]');
-startButton.setAttribute('disabled', 'disabled');
-startButton.addEventListener('click', onStartButtonClick);
-
 const daysLeft = document.querySelector('[data-days]');
 const hoursLeft = document.querySelector('[data-hours]');
 const minutesLeft = document.querySelector('[data-minutes]');
@@ -14,6 +11,12 @@ const secondsLeft = document.querySelector('[data-seconds]');
 let userTime = null;
 let resultTime = null;
 let tiktak = null;
+
+startButton.addEventListener('click', onStartButtonClick);
+
+if (!startButton.hasAttribute('disabled')) {
+  startButton.setAttribute('disabled', 'disabled');
+}
 
 const options = {
   enableTime: true,
@@ -41,11 +44,11 @@ const options = {
   },
 };
 
+flatpickr('#datetime-picker', options);
+
 function addMessage(stat, message) {
   Notiflix.Notify[stat](message);
 }
-
-flatpickr('#datetime-picker', options);
 
 const timer = () => {
   resultTime = userTime - new Date();
@@ -55,6 +58,9 @@ const timer = () => {
   hoursLeft.textContent = addLeadingZero(timerTime.hours);
   minutesLeft.textContent = addLeadingZero(timerTime.minutes);
   secondsLeft.textContent = addLeadingZero(timerTime.seconds);
+  if (resultTime < 500) {
+    clearInterval(tiktak);
+  }
 };
 
 function onStartButtonClick() {
